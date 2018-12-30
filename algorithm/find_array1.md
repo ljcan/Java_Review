@@ -6,6 +6,7 @@
 
 
 、、、
+
 public class Solution {
     public boolean Find(int target, int [][] array) {
         for（int i=0,j=0;i<array.length,j<array[].length;）{
@@ -42,4 +43,5 @@ public class Solution {
         System.out.println(find);
     }
 }
+
 、、、
