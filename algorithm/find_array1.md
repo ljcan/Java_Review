@@ -5,7 +5,7 @@
 输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。
 
 
-'''
+```
 
 public class Solution {
     public boolean Find(int target, int [][] array) {
@@ -32,7 +32,7 @@ public class Solution {
         return false;
     }
     
-    public sttaic void main(String[] args){
+    public static void main(String[] args){
         int[][] array={
             {1,2,3},
             {2,5,6},
@@ -43,5 +43,4 @@ public class Solution {
         System.out.println(find);
     }
 }
-
-'''
+```
