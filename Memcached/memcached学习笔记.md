@@ -1,4 +1,4 @@
-###Memcached的特性：
+### Memcached的特性：
 	Memcached作为高并发，高性能的缓存服务，具有以下特征：
 	1.协议简单：它的实现协议比较简单，使用基于文本行的协议，能通过telnet
 直接操作Memcached服务存取数据。
@@ -6,7 +6,7 @@
 系统的kqueue，Linux系统的epoll等事件处理功能封装成一个接口，确保即使服务器端
 的连接数增加也能发挥很好的性能。
 
-###Memcached工作原理：
+### Memcached工作原理：
 	Memcached是一套C/S模式的架构软件，在服务器端启动服务守护进程，
 可以为memcached服务器指定监听的IP地址，端口号，并发访问连接数以及分配多
 少内存来处理客户端的请求的参数。
@@ -16,7 +16,7 @@
 数据进行管理。应用程序端通过制定缓存服务器的IP地址和端口，就可以连接memcached
 服务互相通信。
 
-###Memcached的内存管理机制：
+### Memcached的内存管理机制：
 	Memcached利用Slab Allocation机制来分配和管理内存。传统的内存管理方式是：
 	使用完通过malloc分配的内存后通过free来回收内存。这种方式容易产生内存
 碎片并降低操作系统对内存的管理效率。Slab Allocation机制不存在这样的问题，它按照
@@ -31,7 +31,7 @@
 如果想优化Memcached对内存的使用，可以考虑重新计算数据的预期平均长度，调整这
 个参数来获得合适的设置值。
 
-###Memcached的删除机制：
+### Memcached的删除机制：
 	Memcached不会释放已分配的内存空间，在数据过期后，客户端不能通过key
 取出它的值，其存储空间被重新利用。
 	Memcached使用的是一种Lazy Expiration策略，自己不会监控存入的Key/value
