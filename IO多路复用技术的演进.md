@@ -72,6 +72,8 @@ Reactor中文“反应堆”，也就是“事件反应”。Reactor模型基于
 
 **Nginx使用多Reactor多进程模型，Memcached和Netty使用多Reactor多线程模型。**
 
+#### 5.proactor模型
+![proactor模型](https://github.com/ljcan/Review/blob/master/Java/pictures/%E5%A4%9AReactor%E5%A4%9A%E8%BF%9B%E7%A8%8B%E6%A8%A1%E5%9E%8B.png)
 
 
 
