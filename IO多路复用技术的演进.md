@@ -62,7 +62,7 @@ Reactor中文“反应堆”，也就是“事件反应”。Reactor模型基于
 1. 子进程处理完毕之后需要将结果发送给Reactor，存在线程安全问题，需要进行共享数据的保护。
 2. 单个Reactor处理所有请求，高并发下是系统的瓶颈。
 
-##### 4.3 duo Reactor多进程/线程模型
+##### 4.3 多Reactor多进程/线程模型
 ![多Reactor多进程/线程](https://github.com/ljcan/Review/blob/master/Java/pictures/%E5%A4%9AReactor%E5%A4%9A%E8%BF%9B%E7%A8%8B%E6%A8%A1%E5%9E%8B.png)
 
 - mainReacotr进行连接事件的监听，将请求发送给Acceptor进行处理。
