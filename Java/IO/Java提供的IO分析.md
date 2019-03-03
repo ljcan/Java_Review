@@ -19,3 +19,18 @@ HttpURLConnection 也归类到同步阻塞 IO 类库，因为网络通信同样�
 有很多人叫它 AIO（Asynchronous IO）。异步 IO 操作基于事件和回调机制，可以简单理解
 为，应用操作直接返回，而不会阻塞在那里，当后台处理完成，操作系统会通知相应线程进行后
 续工作。
+
+
+1. IO 不仅仅是对文件的操作，网络编程中，比如 Socket 通信，都是典型的 IO 操作目标。
+输入流、输出流（InputStream/OutputStream）是用于读取或写入字节的，例如操作图片
+文件。
+2. 而 Reader/Writer 则是用于操作字符，增加了字符编解码等功能，适用于类似从文件中读取
+或者写入文本信息。本质上计算机操作的都是字节，不管是网络通信还是文件读取，
+Reader/Writer 相当于构建了应用逻辑和原始数据之间的桥梁。
+3. BufferedOutputStream 等带缓冲区的实现，可以避免频繁的磁盘读写，进而提高 IO 处理
+效率。这种设计利用了缓冲区，将批量数据进行一次操作，但在使用中千万别忘了 flush。
+4. 很多 IO 工具类都实现了 Closeable 接口，因为需要进行资源的释放。
+比如，打开 FileInputStream，它就会获取相应的文件描述符（FileDescriptor），需要利用
+try-with-resources、 try-finally 等机制保证 FileInputStream 被明确关闭，进而相应文件
+描述符也会失效，否则将导致资源无法被释放。利用专栏前面的内容提到的 Cleaner 或
+finalize 机制作为资源释放的最后把关，也是必要的
