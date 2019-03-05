@@ -25,4 +25,34 @@
 
 这个CAS失败了呢？首先必须明确这个CAS为什么会失败，也就是说发生了竞争，有别的线程和它抢锁并且抢赢了，那么这个情况下，它就会要求撤销偏向锁（因为发生了竞争）。接着它首先暂停拥有偏向锁的线程，检查这个线程是否是个活动线程，如果不是，那么好，你拿了锁但是没在干事，锁还记录着你，那么直接把对象头设置为无锁状态重新来过。如果还是活动线程，先遍历栈帧里面的锁记录，让这个偏向锁变为无锁状态，然后恢复线程。
 
+JDK 在后期引入了 StampedLock，在提供类似读写锁的同时，还支持优化读模式。优化
+读基于假设，大多数情况下读操作并不会和写操作冲突，其逻辑是先试着修改，然后通过
+validate 方法确认是否进入了写模式，如果没有进入，就成功避免了开销；如果进入，则尝试获
+取读锁。
+```
+public class StampedSample {
+private final StampedLock sl = new StampedLock();
+void mutate() {
+long stamp = sl.writeLock();
+try {
+write();
+} finally {
+sl.unlockWrite(stamp);
+}
+}
+Data access() {
+long stamp = sl.tryOptimisticRead();
+Data data = read();
+if (!sl.validate(stamp)) {
+stamp = sl.readLock();
+try {
+data = read();
+} finally {
+sl.unlockRead(stamp);
+}
+}
+return data;
+}}
+```
+
 
