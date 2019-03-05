@@ -81,4 +81,39 @@
         5,随机选取推荐好友 
    ```
 
+### 三、Sort Set的使用场景
+1. SET是一种非常方便的结构，但是数据无序，redis提供了一个sorted set，每一个添加的值都有一个对应的分数，可以通过这个分数进行排序;sorted set中的排名是按照分组升序排列
+2. Sortedset的常用操作：
+	1，ZADD：添加一个带分数的元素，也可以同时添加多个：
+	ZADD hackers 1940 "Alan Kay"
+	ZADD hackers 1906 "Grace Hopper"
+	ZADD hackers 1969 "Linus Torvalds"
+	ZADD hackers 1940 "Alan Kay" 1906 "Grace Hopper" 1969 "Linus Torvalds"
+	
+	2， ZCOUNT key min max ：给定范围分数的元素个数：
+	ZCOUNT hackers 1940 1960 =>1940到1960的hacker个数；
+
+	3， ZRANK key member ：查询指定元素的分数在整个列表中的排名（从0开始）
+	ZRANK hackers "Alan Kay" =>alan kay的年龄在所有hacker中的排名；
+
+	4，zrange hackers 0 -1 =>
+	1) "Grace Hopper"
+	2) "Alan Kay"
+	3) "Linus Torvalds"
+
+   	5，ZREVRANGE key start stop：按照分数从小到大排;   
+
+3. sorted set的使用场景：sorted set算是redis中最有用的一种结构，非常适合用于做海量的数据的排行（比如一个巨型游戏的用户排名）；sorted set的速度非常快；
+   示例1，天梯排名：
+	1，添加初始排名和分数：
+	2，查询fat在当前ladder中的排名：
+	3，查询ladder中的前3名：
+	4，jian增加了20ladder score：
+
+   示例2，
+              LRU淘汰最长时间没使用；
+              LFU淘汰最低使用频率；
+	      
+
+
 
