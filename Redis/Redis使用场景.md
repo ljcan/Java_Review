@@ -55,6 +55,9 @@
 
 	9， SINTERSTORE destination key [key ...] ：获取多个key对应的set之间的交集，并保存为新的key值；目标也是一个set；
 	SINTER groupfriends friends:user:1000 friends:user:1001 friends:user:1002 =>获取三个用户共同的好友列表并保存为组好友列表；
+	
+	10，SDIFF key1 key2:求差集
+	    SDIFFSTORE key key1 key2:求差集并且存储在新的key中。
   ```
   2. set的使用场景：
   ```
