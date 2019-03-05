@@ -162,6 +162,7 @@
 	HDEL user:1000 visits
 ```
 3. 使用场景:
+```
  	1,使用hash来保存一个对象更直观;(建议不使用hash来保存)
 	2,分组
                                      set  user:id  1
@@ -170,7 +171,6 @@
                                      HINCRBY ids user:id
                                      HINCRBY ids dept:id
                                      HMSET users user:1 "{id:1,name:xx}" user:2 "{id:2,name:xx}"
-
-
+```
 
 
