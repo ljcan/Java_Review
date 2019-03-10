@@ -1,5 +1,5 @@
 
-参考![ConcurrentHashMap源码剖析](https://blog.csdn.net/u010723709/article/details/48007881)
+参考[ConcurrentHashMap源码剖析](https://blog.csdn.net/u010723709/article/details/48007881)
 
 在JDK1.8之前的JDK中，ConcurrentHashMap使用Segment分段锁的思想来保证线程安全性，其中Segment元素是实现了ReentrantLock。
 其中get()方法不需要加锁，因为get方法中的共享变量都定义成了volatile类型，保证可以被多个线程可见，并且不会读到过期的数据。
