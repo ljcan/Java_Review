@@ -1,0 +1,14 @@
+在JDK1.8之前的JDK中，ConcurrentHashMap使用Segment分段锁的思想来保证线程安全性，其中Segment元素是实现了ReentrantLock。
+其中get()方法不需要加锁，因为get方法中的共享变量都定义成了volatile类型，保证可以被多个线程可见，并且不会读到过期的数据。
+
+put方法时首先会定位到某一个Segment，然后在Segment里进行插入操作，插入操作需要经历两个步骤，第一步判断是否需要对Segment里的HashEntry数组进行扩容，
+第二步定位添加元素的位置，然后将其放在HashEntry数组里。
+
+ConcurrentHashMap的扩容比HashMap更加适当，因为hashMap是在插入元素之后判断元素是否已经到达容量，如果到达了容量就进行扩容，但是很有可能扩容之后没有新
+的元素插入，这时就是一次无效的扩容。而ConcurrentHashMap是在put之前就判断进行扩容。
+
+size方法中并没有将put,remove和clean方法全部锁住，而是两次尝试不加锁判断count的值是否被修改过，如果没有修改过则表示不加锁统计成功，如果'modcount!=count'
+表示发生了修改，此时才会加锁计算count的值。
+
+
+在JDK1.8中，ConcurrentHashMap摒弃了Segment锁的思想。
