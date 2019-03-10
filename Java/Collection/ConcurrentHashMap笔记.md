@@ -85,3 +85,6 @@ size方法中并没有将put,remove和clean方法全部锁住，而是两次尝�
         return null;
     }
 ```
+
+
+参考![](https://blog.csdn.net/u010723709/article/details/48007881)
