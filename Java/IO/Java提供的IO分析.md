@@ -40,4 +40,4 @@ finalize 机制作为资源释放的最后把关，也是必要的
 2. 然后，创建一个 ServerSocketChannel，并且向 Selector 注册，通过指定SelectionKey.OP_ACCEPT，告诉调度员，它关注的是新的连接请求。
 3. 注意，为什么我们要明确配置非阻塞模式呢？这是因为阻塞模式下，注册操作是不允许的，会抛出 IllegalBlockingModeException 异常。
 4. Selector 阻塞在 select 操作，当有 Channel 发生接入请求，就会被唤醒。
-5.遍历selectKeys，发送客户端请求。
+5. 遍历selectKeys，发送客户端请求。
