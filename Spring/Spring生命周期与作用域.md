@@ -22,3 +22,7 @@ Spring Bean 的销毁过程会依次调用 DisposableBean 的 destroy 方法和 
 5. GlobalSession，用于 Portlet 容器，因为每个 Portlet 有单独的 Session，GlobalSession提供一个全局性的 HTTP Session。
 
 ![Spring AOP](https://github.com/ljcan/Review/blob/master/Java/pictures/Sprinng%20APO.png)
+
+1. Join Point 仅仅是可利用的机会。
+2. Pointcut 是解决了切面编程中的 Where 问题，让程序可以知道哪些机会点可以应用某个切面动作。
+3. 而 Advice 则是明确了切面编程中的 What，也就是做什么；同时通过指定 Before、After 或者 Around，定义了 When，也就是什么时候做。
