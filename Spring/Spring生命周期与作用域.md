@@ -20,3 +20,5 @@ Spring Bean 的销毁过程会依次调用 DisposableBean 的 destroy 方法和 
 3. Request，为每个 HTTP 请求创建单独的 Bean 实例。
 4. Session，很显然 Bean 实例的作用域是 Session 范围。
 5. GlobalSession，用于 Portlet 容器，因为每个 Portlet 有单独的 Session，GlobalSession提供一个全局性的 HTTP Session。
+
+![Spring AOP](https://github.com/ljcan/Review/blob/master/Java/pictures/Sprinng%20APO.png)
