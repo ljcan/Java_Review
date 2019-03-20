@@ -26,6 +26,8 @@ native方法需要借助C语言来完成，实现步骤如下：
 3. 将第二步的.cpp文件编译成动态链接库文件。
 4. 在Java中用System的loadLibrary()方法或Runtime的loadLibrary()方法加载第三步产生的动态链接文件，就可以在java程序中调用这个native方法了。
 
+java调用C++代码：![java和C++混编](https://www.cnblogs.com/moon1992/p/5260226.html)
+
 **java 7增强的try语句关闭资源**
 
 它允许在try关键字后紧跟一对圆括号可以声明，初始化一个或多个资源，此处的资源指的是那些必须在程序结束时显式关闭的资源（比如数据库连接，网络连接等），
