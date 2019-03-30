@@ -104,6 +104,114 @@ Servlet接口：定义了一个servlet应该具有的方法，所有的Servlet�
 	   classLoader.getResource("../1.properties").getPath()，直接返回资源的真实路径，没有更新延迟的问题。
 ```
 
+#### Response/Request
+```
+（1）、Response
+		1.Resonse的继承结构：
+			ServletResponse--HttpServletResponse
+		2.Response代表响应，于是响应消息中的 状态码、响应头、实体内容都可以由它进行操作,由此引伸出如下实验：
+		3.利用Response输出数据到客户端
+			response.getOutputStream（）.write("中文".getBytes())输出数据，这是一个字节流，是什么字节输出什么字节，
+			而浏览器默认用平台字节码打开服务器发送的数据，如果服务器端使用了非平台码去输出字符的字节数据就需要明确的指定
+			浏览器编码时所用的码表，以防止乱码问题。response.addHeader("Content-type","text/html;charset=gb2312")
+			response.getWriter().write(“中文”);输出数据，这是一个字符流，response会将此字符进行转码操作后输出到浏览器，
+			这个过程默认使用ISO8859-1码表，而ISO8859-1中没有中文，于是转码过程中用?代替了中文，导致乱码问题。
+			可以指定response在转码过程中使用的目标码表，防止乱码。response.setCharcterEncoding("gb2312");
+			其实response还提供了setContentType("text/html;charset=gb2312")方法，此方法会设置content-type响应头，
+			通知浏览器打开的码表，同时设置response的转码用码表，从而一行代码解决乱码。
+		4.利用Response 设置 content-disposition头实现文件下载
+			设置响应头content-disposition为“attachment;filename=xxx.xxx”
+			利用流将文件读取进来，再利用Response获取响应流输出
+			如果文件名为中，一定要进行URL编码，编码所用的码表一定要是utf-8
+		5.refresh头控制定时刷新
+			设置响应头Refresh为一个数值，指定多少秒后刷新当前页面
+			设置响应头Refresh为 3;url=/Day05/index.jsp,指定多少秒后刷新到哪个页面
+			可以用来实现注册后“注册成功，3秒后跳转到主页”的功能
+			在HTML可以利用<meta http-equiv= "" content="">标签模拟响应头的功能。
+		6.利用response设置expires、Cache-Control、Pragma实现浏览器是否缓存资源，这三个头都可以实现，但是由于历史原因，
+		  不同浏览器实现不同，所以一般配合这三个头使用
+			6.1控制浏览器不要缓存（验证码图片不缓存）设置expires为0或-1设置Cache-Control为no-cache、Pragma为no-cache
+			6.2控制浏览器缓存资源。即使不明确指定浏览器也会缓存资源，这种缓存没有截至日期。当在地址栏重新输入地址时会用缓存，
+			   但是当刷新或重新开浏览器访问时会重新获得资源。
+			   如果明确指定缓存时间，浏览器缓存是，会有一个截至日期，在截至日期到期之前，当在地址栏重新输入地址或重新开
+			   浏览器访问时都会用缓存，而当刷新时会重新获得资源。
+		7.Response实现请求重定向
+			7.1古老方法：response.setStatus(302);response.addHeader("Location","URL");
+			7.2快捷方式：response.sendRedirect("URL");
+		8.输出验证码图片
+
+		9.Response注意的内容：
+			9.1对于一次请求，Response的getOutputStream方法和getWriter方法是互斥，只能调用其一，
+			   特别注意forward后也不要违反这一规则。
+			9.2利用Response输出数据的时候，并不是直接将数据写给浏览器，而是写到了Response的缓冲区中，
+			   等到整个service方法返回后，由服务器拿出response中的信息组成HTTP响应消息返回给浏览器。
+			9.3service方法返回后，服务器会自己检查Response获取的OutputStream或者Writer是否关闭，如果没有关闭，
+			   服务器自动帮你关闭，一般情况下不要自己关闭这两个流。
+			   
+（2）、Request：
+	Request代表请求对象，其中封装了对请求中具有请求行、请求头、实体内容的操作的方法
+		1.获取客户机信息
+			getRequestURL方法返回客户端发出请求完整URL
+			getRequestURI方法返回请求行中的资源名部分,在权限控制中常用
+			getQueryString 方法返回请求行中的参数部分
+			getRemoteAddr方法返回发出请求的客户机的IP地址
+			getMethod得到客户机请求方式
+			getContextPath 获得当前web应用虚拟目录名称，特别重要！！！，工程中所有的路径请不要写死，其中的web应用名要以此方法去获得。
+
+		2.获取请求头信息
+			getHeader(name)方法 --- String ，获取指定名称的请求头的值
+			getHeaders(String name)方法 --- Enumeration<String> ，获取指定名称的请求头的值的集合，因为可能出现多个重名的请求头
+			getHeaderNames方法 --- Enumeration<String> ，获取所有请求头名称组成的集合
+			getIntHeader(name)方法  --- int ，获取int类型的请求头的值
+			getDateHeader(name)方法 --- long(日期对应毫秒) ，获取一个日期型的请求头的值，返回的是一个long值，
+			从1970年1月1日0时开始的毫秒值
+
+		*实验：通过referer信息防盗链
+			String ref = request.getHeader("Referer");
+			if (ref == null || ref == "" || !ref.startsWith("http://localhost")) {
+			response.sendRedirect(request.getContextPath() + "/homePage.html");
+			} else {
+			this.getServletContext().getRequestDispatcher("/WEB-INF/fengjie.html").forward(request, response);
+			}
+		3.获取请求参数
+			getParameter(name) --- String 通过name获得值
+			getParameterValues（name）  --- String[ ] 通过name获得多值 checkbox
+			getParameterNames  --- Enumeration<String> 获得所有请求参数名称组成的枚举
+			getParameterMap  --- Map<String,String[ ]> 获取所有请求参数的组成的Map集合，注意，其中的键为String，值为String[]
+
+			获取请求参数时乱码问题：
+			浏览器发送的请求参数使用什么编码呢？当初浏览器打开网页时使用什么编码，发送就用什么编码。
+			服务器端获取到发过来的请求参数默认使用ISO8859-1进行解码操作，中文一定有乱码问题
+			对于Post方式提交的数据，可以设置request.setCharacterEncoding("gb2312");来明确指定获取请求参数时使用编码。
+			但是此种方式只对Post方式提交有效。
+			对于Get方式提交的数据，就只能手动解决乱码：String newName = new String(name.getBytes("ISO8859-1"),"gb2312");
+			此种方法对Post方式同样有效。
+			在tomcat的server.xml中可以配置http连接器的URIEncoding可以指定服务器在获取请求参数时默认使用的编码，
+			从而一劳永逸的决绝获取请求参数时的乱码问题。
+			也可以指定useBodyEncodingForURI参数，令request.setCharacterEncoding也对GET方式的请求起作用，
+			但是这俩属性都不推荐使用，因为发布环境往往不允许修改此属性。
+
+
+		4.利用请求域传递对象
+			生命周期：在service方法调用之前由服务器创建，传入service方法。整个请求结束，request生命结束。
+			作用范围：整个请求链。
+			作用：在整个请求链中共享数据，最常用的：在Servlet中处理好的数据要交给Jsp显示，此时参数就可以放置在Request域中带过去。
+
+		5.request实现请求转发
+			ServletContext可以实现请求转发，request也可以。
+			在forward之前输入到response缓冲区中的数据，如果已经被发送到了客户端，forward将失败，抛出异常
+			在forward之前输入到response缓冲区中的数据，但是还没有发送到客户端，forward可以执行，但是缓冲区将被清空，之前的数据丢失。				注意丢失的只是请求体中的内容，头内容仍然有效。
+			在一个Servlet中进行多次forward也是不行的，因为第一次forward结束，response已经被提交了，没有机会再forward了
+			总之，一条原则,一次请求只能有一次响应，响应提交走后，就再没有机会输出数据给浏览器了。
+
+		6.RequestDispatcher进行include操作
+			forward没有办法将多个servlet的输出组成一个输出，因此RequestDispatcher提供了include方法，
+			可以将多个Servlet的输出组成一个输出返回个浏览器
+			request.getRequestDispatcher("/servlet/Demo17Servlet").include(request, response);
+			response.getWriter().write("from Demo16");
+			request.getRequestDispatcher("/servlet/Demo18Servlet").include(request, response);
+			常用在页面的固定部分单独写入一个文件，在多个页面中include进来简化代码量。
+```
 
 
 
