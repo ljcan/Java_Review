@@ -213,6 +213,54 @@ Servlet接口：定义了一个servlet应该具有的方法，所有的Servlet�
 			常用在页面的固定部分单独写入一个文件，在多个页面中include进来简化代码量。
 ```
 
+#### URL编码
+```
+1.由于HTTP协议规定URL路径中只能存在ASCII码中的字符，所以如果URL中存在中文或特殊字符需要进行URL编码。
+		2.编码原理：
+			将空格转换为加号（+） 
+			对0-9,a-z,A-Z之间的字符保持不变 
+			对于所有其他的字符，用这个字符的当前字符集编码在内存中的十六进制格式表示，并在每个字节前加上一个百分号（%）。
+			如字符“+”用%2B表示，字符“=”用%3D表示，字符“&”用%26表示，每个中文字符在内存中占两个字节，字符“中”用%D6%D0表示，
+			字符“国”用%B9%FA表示调对于空格也可以直接使用其十六进制编码方式，即用%20表示，而不是将它转换成加号（+） 
+			说明：
+			如果确信URL串的特殊字符没有引起使用上的岐义或冲突你也可以对这些字符不进行编码，而是直接传递给服务器。
+			例如，http://www.it315.org/dealregister.html?name=中国&password=123 
+			如果URL串中的特殊字符可能会产生岐义或冲突，则必须对这些特殊字符进行URL编码。
+			例如，服务器会将不编码的“中+国”当作“中国”处理。还例如，当name参数值为“中&国”时，如果不对其中的“&”编码，
+			URL字符串将有如下形式：http://www.it315.org/dealregister.html?name=中&国&password=123，
+			应编码为：http://www.it315.org/dealregister.html?name=中%26国&password=123 
+			http://www.it315.org/example/index.html#section2可改写成http://www.it315.org/example%2Findex.html%23section2 
+		3.在java中进行URL编码和解码
+			URLencoder.encode("xxxx","utf-8");
+			URLDecoder.decode(str,"utf-8");
+```
+
+#### 请求和重定向的区别
+```
+		1.区别
+			1) RequestDispatcher.forward方法只能将请求转发给同一个WEB应用中的组件；而HttpServletResponse.sendRedirect 
+			方法还可以重定向到同一个站点上的其他应用程序中的资源，甚至是使用绝对URL重定向到其他站点的资源。 
+			
+			2) 如果传递给HttpServletResponse.sendRedirect 方法的相对URL以“/”开头，它是相对于服务器的根目录；
+			如果创建RequestDispatcher对象时指定的相对URL以“/”开头，它是相对于当前WEB应用程序的根目录。 
+			
+			3) 调用HttpServletResponse.sendRedirect方法重定向的访问过程结束后，浏览器地址栏中显示的URL会发生改变，
+			由初始的URL地址变成重定向的目标URL；调用RequestDispatcher.forward 方法的请求转发过程结束后，
+			浏览器地址栏保持初始的URL地址不变。
+			
+			4) HttpServletResponse.sendRedirect方法对浏览器的请求直接作出响应，响应的结果就是告诉浏览器去重新发出对
+			另外一个URL的访问请求；RequestDispatcher.forward方法在服务器端内部将请求转发给另外一个资源，
+			浏览器只知道发出了请求并得到了响应结果，并不知道在服务器程序内部发生了转发行为。 
+			
+			5) RequestDispatcher.forward方法的调用者与被调用者之间共享相同的request对象和response对象，
+			它们属于同一个访问请求和响应过程；而HttpServletResponse.sendRedirect方法调用者与被调用者使用
+			各自的request对象和response对象，它们属于两个独立的访问请求和响应过程。 
+		
+		2.应用场景（参照图想）
+			通常情况下都用请求转发，减少服务器压力
+			当需要更新地址栏时用请求重定向，如注册成功后跳转到主页。
+			当需要刷新更新操作时用请求重定向，如购物车付款的操作。
+```
 
 
 
