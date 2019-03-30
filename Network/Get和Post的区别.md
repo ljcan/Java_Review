@@ -13,7 +13,7 @@
 
 HTTP请求头：
 ```
-Accept: text/html,image/*    客户端可以接受的数据类型
+			Accept: text/html,image/*    客户端可以接受的数据类型
 			Accept-Charset: ISO-8859-1	客户端接受数据需要使用的字符集编码
 			Accept-Encoding: gzip,compress 客户端可以接受的数据压缩格式
 			Accept-Language: en-us,zh-cn  可接受的语言环境
