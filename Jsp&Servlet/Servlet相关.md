@@ -9,6 +9,9 @@ web应用被移除出虚拟主机，servlet对象销毁并在销毁前调用dest
 
 Servlet接口：定义了一个servlet应该具有的方法，所有的Servlet都应该直接或间接实现此接口
 			
-			|----GenericServlet：对Servlet接口的默认实现，通用Servlet，这是一个抽象类，其中的大部分方法都做了默认实现，只有service方法是一个抽象方法需要继承者自己实现。
+			|----GenericServlet：对Servlet接口的默认实现，通用Servlet，这是一个抽象类，其中的大部分方法都做了默认实现，
+			只有service方法是一个抽象方法需要继承者自己实现。
 						|
-						|----HttpServlet:对HTTP协议进行了优化的Servlet，继承自GenericServlet类，并且实现了其中的service抽象方法，默认的实现中判断了请求的请求方式，并根据请求方式的不同分别调用不同的doXXX()方法。通常我们直接继承HttpServlet即可。
+						|----HttpServlet:对HTTP协议进行了优化的Servlet，继承自GenericServlet类，
+						并且实现了其中的service抽象方法，默认的实现中判断了请求的请求方式，并根据
+						请求方式的不同分别调用不同的doXXX()方法。通常我们直接继承HttpServlet即可。
