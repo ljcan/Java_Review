@@ -11,8 +11,13 @@
 而对于POST，浏览器先发送header，服务器响应100 continue，浏览器再发送data，服务器响应200 ok（返回数据）。**
 
 
-HTTP请求头：
+HTTP请求：
 ```
+请求行
+			请求方法GET/POST
+			请求资源URL
+			HTTP协议版本号	
+请求头
 			Accept: text/html,image/*    客户端可以接受的数据类型
 			Accept-Charset: ISO-8859-1	客户端接受数据需要使用的字符集编码
 			Accept-Encoding: gzip,compress 客户端可以接受的数据压缩格式
@@ -24,6 +29,8 @@ HTTP请求头：
 			Cookie 
 			Connection: close/Keep-Alive 指定是否继续保持连接
 			Date: Tue, 11 Jul 2000 18:23:51 GMT 当前时间
+请求正文
+			一般都是空的，可选的		
 ```
 
 HTTP响应：
