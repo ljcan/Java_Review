@@ -1,3 +1,4 @@
+```
 2.2、TOMCAT服务器的安装与配置
 		2.2.1.常见服务器：WebLogic（BEA）、webSphere（IBM）、Tomcat（Apache）
 		2.2.2.Tomcat 的下载与安装
@@ -50,3 +51,5 @@
 						(2)通用context和通用web.xml，所有的<Context>都继承子conf/context.xml,所有的web.xml都继承自conf/web.xml
 						(3)reloadable让tomcat自动加载更新后的web应用，当java程序修改后不用重启，服务器自动从新加载，开发时设为true方便开发，发布时设为false，提高性能
 						(4)Tomcat管理平台，可以在conf/tomcat-users.xml下配置用户名密码及权限
+						
+```
