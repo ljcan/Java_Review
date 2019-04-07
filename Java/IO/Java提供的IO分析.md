@@ -32,8 +32,7 @@ Reader/Writer 相当于构建了应用逻辑和原始数据之间的桥梁。
 4. 很多 IO 工具类都实现了 Closeable 接口，因为需要进行资源的释放。
 比如，打开 FileInputStream，它就会获取相应的文件描述符（FileDescriptor），需要利用
 try-with-resources、 try-finally 等机制保证 FileInputStream 被明确关闭，进而相应文件
-描述符也会失效，否则将导致资源无法被释放。利用专栏前面的内容提到的 Cleaner 或
-finalize 机制作为资源释放的最后把关，也是必要的
+描述符也会失效，否则将导致资源无法被释放。
 
 ##### NIO多路复用实现原理
 1. 首先，通过 Selector.open() 创建一个 Selector，作为类似调度员的角色。
