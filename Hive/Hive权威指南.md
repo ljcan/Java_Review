@@ -1,3 +1,4 @@
+### 二、基础操作
 **hive中使用一次性命令**
 
 可以使用参数-e来执行，不需要进入命令行。
@@ -17,6 +18,25 @@ Hive会将最近10000行命令记录到文件$HOME/.hivehistory中。
 用户不需要退出hive CLI就可以执行简单的bash shell命令，只要在命令前加上!并且以;结尾就可以了。
 
 hive CLI中也可以执行Hadoop命令，去掉hadoop/hdfs执行剩余命令即可。
+
+### 三、数据类型与文件格式
+**基本数据类型**
+数据类型 | 长度
+------- | -----
+TINYINT | 1byte有符号整数
+SMALINT |  2byte有符号整数
+INT    |4byte有符号整数
+BIGINT  | 8byte有符号整数
+BOOLEAN  | 布尔类型
+FLOAT    | 单精度浮点数
+DOUBLE  | 双精度浮点数
+STRING   | 字符序列
+TIMESTAMP | 整数，浮点数或者字符串
+BINARY   | 字节数组
+
+
+
+
 
 
 
