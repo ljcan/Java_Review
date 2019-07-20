@@ -274,6 +274,10 @@ comment '创建分区字段索引';
 as...语句指定了索引处理器，也就是一个实现了索引接口的Java类。
 hive中还内置了bitmap索引处理器，bitmap索引普遍应用于排重后值较少的列。
 
+ ### 十、调优
+ 
+ [Hive调优总结](https://blog.csdn.net/qq_37142346/article/details/89852906)
+ 
  
  
  
