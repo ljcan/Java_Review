@@ -65,7 +65,7 @@ CREATE TABLE employees(
 传统的数据库都是在数据写的时候对数据，模式等进行检验，属于写时模式，
 而Hive在数据装载时并不会进行校验，有时对表的创建，修改甚至损坏，在查询时才会进行校验，也就是读时模式。
 
-### HiveQL：数据定义
+### 四、HiveQL：数据定义
 
 Hive与其他SQL存在差异：Hive不支持行级插入操作，更新操作和删除操作，Hive也不支持事物。
 
@@ -112,6 +112,92 @@ location '';
 ```
 注意：如果语句中省略external关键字，而原表是外部表的话，新表也是外部表，如果原表是内部表的话，新表也是内部表。
 如果没有省略，但是原表是内部表的话，新表将会是外部表。
+
+**分区表**
+
+创建分区表：
+```
+create table emp(
+  ...
+  )partitioned by(contry string,state string);
+```
+在对一个分区表进行查询的时候，在严格模式下必须加where过滤语句，否则将禁止提交这个任务。可以通过下面参数来设置模式：
+```
+set hive.mapred.mode=strict/nonstrict;
+```
+
+**表的存储格式**
+
+使用关键字`stored as`来指定存储表的格式。
+使用textfile表示每一行将被认为是一个单独的记录。
+还可以指定为`sequencefile`和`rcfile`等等，这两种文件格式都是使用二进制编码和压缩来优化磁盘空间使用以及IO带宽性能的。
+
+<font color=red>hive使用一个inputformat对象将输入流分割成记录，然后使用一个outputformat对象来将记录格式化为输出流（例如查询结果），
+  再使用一个SerDe在读数据时将记录解析成列，在写数据时将列编码成记录。</font>
+  
+  用户也可以自定义InputFormat以及OutputFormat以及SerDe：
+  ```
+  create table tmp 
+  row format serde ''
+  stored as 
+  inputformat ''
+  outputformat '';
+  ```
+  
+  使用下面语句将会把这个分区内的文件打成一个Hadoop压缩包（HAR）文件，这样仅仅可以降低文件系统中的文件数以及减轻NameNode的压力，而不会减少任何存储
+  空间：
+  ```
+  alter table log archive partition(year=2019,month=7,day=20);
+  ```
+  
+  ### 五、HiveQL：数据操作
+  
+  **向管理表中装载数据**
+  
+  ```
+  load data local inpath '' 
+  overwrite into table emp
+  partition(country='',state='');
+  ```
+  加了local关键字表示使用的是本地文件系统，它会将本地数据拷贝到分布式文件系统中，没有使用local关键字的话只是转移数据到目标位置。
+  
+  **插入表数据**
+  
+  hive不支持单行插入，修改和删除。
+  ```
+  insert overwrite table emp
+  partition(country='',state='')
+  select ...
+  ```
+  上面的这种插入方式其实属于动态分区插入，hive也支持动静态分区结合插入：
+  ```
+  insert overwrite table myemp
+  partiton(country='',state)
+  select ... from emp
+  where contry='';
+  ```
+  注意：静态分区键必须出现在动态分区键之前。
+  
+  动态分区功能模式是没有开启的，开启后，默认是以严格模式来执行的，在这种模式下要求至少有一列分区字段是静态的。
+ 动态分区属性：
+ 
+ | 属性名称 | 缺省值 | 描述 |
+ |-------- | ------- | --- |
+ | hive.exec.dynamic.partition | false |设置为true表示开启动态分区功能 |
+ | hive.exec.dynamic.partition.mode | strict | 设置为nonstrict，表示开启动态分区功能 |
+ | hive.exec.max.dynamic.partitions.pernode | 100 | 每个mapper或reducer可以创建的最大动态分区个数，如果大于该值会抛出异常 |
+ | hive.exec.max.dynamic.partitions | 1000 | 一个动态分区创建语句可以创建的最大动态分区个数，如果超过该值就会抛出异常  |
+ | hive.exec.max.created.files   | 100000 | 全局可以创建的最大文件个数，有一个Hadoop计数器会跟踪记录创建了多少个文件，如果超过这个值会抛出错误信息|
+ 
+ **导出数据**
+ ```
+ insert overwrite local directory ''
+ select ...
+ from ...
+ where ...
+ ```
+ 
+  
 
 
 
