@@ -214,6 +214,69 @@ set hive.mapred.mode=strict/nonstrict;
  
  hiving子句允许用户通过一个简单的语法完成原本需要通过子查询才能对group by语句产生的分组进行条件过滤的任务。
  
+ **join语句**
+ 
+ 内连接（inner join），只有进行连接的两个表中都存在与连接标准相匹配的才会被保留下来。
+ 大多数情况下，hive会对每一个join连接对象启动一个MR任务，当对3个或者更多个表进行join连接时，如果每个on子句都使用
+ 相同键连接的时候，那么只会产生一个MR作业。
+ 
+ 左连接操作中，join操作符左边表中符号where子句的所有记录将会被返回，join操作符右边表中如果没有符合on后面连接条件的记录时，那么从右边表指定
+ 选择的列的值将会是null。
+ 
+ （左外连接）右外连接：会返回右边表所有符合where语句的记录，左表中匹配不上的字段值用null代替。
+ 
+ Full outer join：完全外连接将会返回所有表中符合where语句条件的所有记录，如果任一个表的指定字段没有符合条件的值，那么就使用null值来替代。
+ 
+ map-side join：https://blog.csdn.net/qq_37142346/article/details/89852906
+ 
+ **排序**
+ 
+ hive中提供了两种排序关键字：order by、sort by。
+ order by：会对查询结果集执行一个全局的排序，也就是说所有的数据都会通过一个reducer中对数据进行排序。
+ sort by：其只会在每一个reducer中对数据进行排序，也就是执行一个局部排序的过程。这样就可以保证每个reducer的输出是有序的（并非全局有序），这样
+ 就可以提高后面进行全局排序的效率。
+ 
+ distribute by控制map的输出在reducer中是如何划分的，可以保证按照某个key distribute的数据发往同一个reducer中处理。
+ Hive要求distribute by语句写在sort by语句之前。
+ 
+**cluster by...语句等价于distribute by...sort by语句，不过这样会剥夺sort by的并行度，然而这样可以实现输出文件的数据是全局排序的。**
+
+**抽样查询**
+```
+select * from numbers TABLESAMPLE(BUCKET 3 OUT OF 10 ON rand()) s;
+```
+
+数据块抽样：hive提供了一种按照抽样百分比进行抽样的方式，这种是基于行数的，按照输入路径下的数据块百分比进行的抽样。
+```
+select * from number TABLESAMPLE(0.1 PERCENT) s;
+```
+这种抽样方式不一定适用于所有的文件格式，最小的抽样单元是一个HDFS数据块，因此，如果表的数据大小小于普通的块大小128MB的话，将会返回所有的行。
+
+**视图**
+
+视图可以允许保存一个查询并像对待表一样对这个查询进行操作。
+当查询变得长或者复杂的时候，通过使用视图将这个查询语句分割成多个小的，更可控的片段可以降低这种复杂度。
+Hive会先解析视图，然后使用解析结果再来解析整个查询语句。、
+
+### 八、HiveQL：索引
+
+为分区字段country创建索引：
+```
+create index emp_index
+on table emp(country)
+as 'org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler'
+with deferred rebuild
+idxproperties('creator'='me')
+in table emp_index_table
+partitioned by(country,name)
+comment '创建分区字段索引';
+```
+as...语句指定了索引处理器，也就是一个实现了索引接口的Java类。
+hive中还内置了bitmap索引处理器，bitmap索引普遍应用于排重后值较少的列。
+
+ 
+ 
+ 
   
 
 
