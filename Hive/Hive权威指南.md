@@ -197,6 +197,23 @@ set hive.mapred.mode=strict/nonstrict;
  where ...
  ```
  
+ (https://cloud.tencent.com/developer/article/1120640)[hive内置函数]
+ 
+ 
+ **case when then句式**
+ ```
+ case when ... then ...
+      when ... then ... 
+      else ...
+      end as ..
+ ```
+ 
+ 设置属性`hive.exec.mode.local.auto=true`hive将会尝试使用本地模式执行查询操作。
+ 
+ **hiving语句**
+ 
+ hiving子句允许用户通过一个简单的语法完成原本需要通过子查询才能对group by语句产生的分组进行条件过滤的任务。
+ 
   
 
 
