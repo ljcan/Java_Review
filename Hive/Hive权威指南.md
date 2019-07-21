@@ -289,6 +289,45 @@ hive中还内置了bitmap索引处理器，bitmap索引普遍应用于排重后�
 
 该存储方式可以将一个文件划分为多个块，然后采用一种可分割的方式对块进行压缩。有三种压缩级别：NONE，RECORD和BLOCK。参数`mapred.output.compression.type`可以配置使用哪种压缩级别。
 
+### 十三、函数
+
+hive支持的函数：内置函数、用户自定义函数（UDF），用户自定义聚合函数（UDAF）、表生成函数（UDTF）。
+
+1. UDF：表示一行数据中的一列或者多列数据作为参数然后返回结果是一个值的函数。
+2. UDAF：接受从零行到多行的零个到多个列，然后返回单一的值。
+3. UDTF：接受零个或多个输入，然后产生多列或多行输出。
+
+lateral view可以方便地将explode这个UDTF得到的行转列的结果集合在一起提供服务。使用lateral view需要指定视图别名和生成的新列的别名。
+
+自定义函数之后，使用命令`add jar xx.jar`将jar包加入到类路径下，然后使用`create temporary function ... as ...`来起一个函数名，就可以使用该函数了。
+
+如果想要将自己的函数永久的加入到hive中，可以修改源码，重新编译即可。
+修改FunctionRegistry.java，添加下面代码即可：`registerGenericUDF(xxx,xxx.class)`。
+
+### 十七、存储处理以及连接NOSQL
+
+HiveStorageHandler是Hive用于连接如HBase、Cassandra等类似的NoSQL存储的主要接口。
+如下展示如何映射Hive创建一个指向HBase表的hive表：
+```
+create table(xx,xx)
+stored by 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+with serdeproperties("hbase.columns.mapping"="")
+tblproperties("hbase.table.name"="");
+```
+如果想创建一个已经存在的HBase表的Hive表的话，那么就必须使用`create external table`这个hive语句了。
+
+和hbase结合使用的hive支持HBASE表和HBASE表的连接操作，也支持HBASE表和非HBASE表的连接操作。
+
+对于一个与HBASE表映射的hive进行查询操作，不需要扫描整个HBASE表，通过过滤下推裁剪将会返回给hive的行数据，下推优化默认开启,必要时可以关闭：
+```
+set hive.optimize.ppd.storage=false;
+```
+
+当将hive中的数据导入到HBASE中时，需要注意，HBASE要求键是排重后唯一的，而hive并无此要求。
+
+
+
+
 
  
  
