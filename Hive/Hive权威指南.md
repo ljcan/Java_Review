@@ -278,6 +278,19 @@ hive中还内置了bitmap索引处理器，bitmap索引普遍应用于排重后�
  
  [Hive调优总结](https://blog.csdn.net/qq_37142346/article/details/89852906)
  
+ ### 十一、文件格式以及压缩方法
+ 
+对中间数据进行压缩可以减少job中map和reduce task间的数据传输量。对于中间数据压缩，选择一个低CPU开销的编/解码器要重要的多，
+属性`hive.exec.compress.intermediate`的默认值为false，必要时可以设置为true开启。
+
+最终输出结果是否需要压缩，使用参数`hive.exec.compress.output`来控制。
+
+**sequence file存储格式**
+
+该存储方式可以将一个文件划分为多个块，然后采用一种可分割的方式对块进行压缩。有三种压缩级别：NONE，RECORD和BLOCK。参数`mapred.output.compression.type`可以配置使用哪种压缩级别。
+
+
+ 
  
  
  
