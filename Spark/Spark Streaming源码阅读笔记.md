@@ -12,10 +12,10 @@ Spark Streaming有自己的checkpoint机制。有以下两种：
 1. Metadata Checkpoint：将元数据信息配置到可容错的分布式文件系统中。
 2. Data Checkpoint：将生成的RDD保存到外部可靠的存储当中，对于一些数据跨度为多个batch的有状态 transformtaion操作来说，很有必要。
 
-**热备份：**系统在正常工作的时候，在物理机上做好备用硬件运行所需要的状态的更新。遇到异常的时候，系统把受影响的工作自动切换到备用硬件上运行，以保证
+**热备份：** 系统在正常工作的时候，在物理机上做好备用硬件运行所需要的状态的更新。遇到异常的时候，系统把受影响的工作自动切换到备用硬件上运行，以保证
 继续不间断的进行。
 
-**冷备份：**系统在正常运行的时候就做好日常数据和元数据的备份，遇到异常的时候，系统通常需要通过人工重新启动，并利用备份的数据和元数据来恢复工作。
+**冷备份：** 系统在正常运行的时候就做好日常数据和元数据的备份，遇到异常的时候，系统通常需要通过人工重新启动，并利用备份的数据和元数据来恢复工作。
 
 Driver中使用了冷备方式。
 Executor中使用了热备以及冷备的方式。
@@ -30,8 +30,9 @@ Receiver方式有这样一个问题：Receiver接收数据是积累到一定的�
 还要保证计算结果输出不重复。
 对每一个partition会产生一个uniqueId，只有这个partition的数据被完成消费，才算成功，否则算失败，需要回滚，下次重复执行这个uniqueId，如果是执行过的则跳过，这样就保证了exactly-once语义。
 
-spark streaming性能调优机制：
+**spark streaming性能调优机制：**
 1. 数据接收的并行度：可以创建多个InputDstream，接收同一数据源数据，还可以通过配置，让这些DStream分别接收数据源的不同分区的数据。，最大DStream个数可以达到数据源提供的分区数。
+```
 JavaStreamingContext streamingContext=new JavaStreamingContext(conf,Durations.seconds(5));
  		//提高数据接收的并行度
 		int numStreams=5;
@@ -42,12 +43,14 @@ JavaStreamingContext streamingContext=new JavaStreamingContext(conf,Durations.se
 		}
 		JavaPairDStream<String,String> unionDStream=streamingContext
 				.union(kafkaStreams.get(0), kafkaStreams.subList(1, kafkaStreams.size()));
-
+```
 2. Task的并行度：
 数据接收使用的BlockGenerator里面有个RecurringTimer类型的对象blockIntervalTimer，会周期性地发送BlockGenerator消息，进而周期性地生成和存储一个Block，这个周期有一个配置参数spark.streaming.blockInterval，这个时间周期的默认值为200ms。生成的一个个block，实际上就对应了RDD中提到的partition，每一个partition都会对应一个block，而spark streaming按照block Interval来组织一次数据接收和处理，所以Batch Interval内的block个数就是RDD的partition数，也就是RDD的并行Task数。
 
 3. 序列化：使用kryo序列化方式或者自定义序列化接口。
 4. 处理数据的速度要跟上数据流入的速度，即批处理时间必须小于批次间隔时间。
 5. JVM GC：在Driver端以及Executor端开启使用CMS垃圾回收器。在spark-submit提交应用程序时执行时增加两个设置：
+```
 --driver-java-options"-XX:+UseConcMarkSweepGC"
 --conf"spark.executor.extraJavaOptions=-XX:+UseConcMarkSweepGC"
+```
