@@ -41,6 +41,27 @@ HDFS异构存储特性的出现使得我们不需要搭建2套独立的集群来
 2. 随后 NameNode 进行汇总并更新集群内各个节点的存储类型情况 。
 3. 待复制文件根据自身设定的存储策略信息向 NameNode 请求拥有此类型存储介质的DataNode作为候选节点。
 
+**块存储策略集合**
+
+1. HOT
+2. COLD
+3. WARM
+4. ALL_SSD
+5. ONE_SSD
+6. LAZY_PERSIST
+
+在这6种策略中，前三种策略和后三种策略可以看作是两大类。前三种策略是根据冷热数据的角度来区分的，后三种策略是根据存放盘的性质来区分的。
+
+因为块有多副本机制，每个策略要为所有的副本都返回相应的StorageType(如`new Storageτ'ype[]{Storageτ'ype.SSD, Storageτ'ype .DISK}
+`)，如果副本数超过候选的StorageType数组时应怎么处理：
+1. 从前往后依次匹配存储类型与对应的副本下标相匹配，同时要过滤掉transient 属性的存储类型。
+2. 获取最后一个存储类型，统一作为多余副本的存储类型。
+
+以`new Storageτ'ype[]{Storageτ'ype.SSD, Storageτ'ype .DISK}`为例，第一个副本的类型必然是SSD，其余的副本跟最后一个类型一致，都是DISK类型。
+![HDFS副本存储类型](https://github.com/ljcan/jqBlogs/blob/master/Hadoop/HDFS%E5%9D%97%E5%89%AF%E6%9C%AC%E5%AD%98%E5%82%A8%E7%B1%BB%E5%9E%8B.png)
+
+
+
 
 
 
