@@ -60,6 +60,10 @@ HDFS异构存储特性的出现使得我们不需要搭建2套独立的集群来
 以`new Storageτ'ype[]{Storageτ'ype.SSD, Storageτ'ype .DISK}`为例，第一个副本的类型必然是SSD，其余的副本跟最后一个类型一致，都是DISK类型。
 ![HDFS副本存储类型](https://github.com/ljcan/jqBlogs/blob/master/Hadoop/HDFS%E5%9D%97%E5%89%AF%E6%9C%AC%E5%AD%98%E5%82%A8%E7%B1%BB%E5%9E%8B.png)
 
+**HDFS存储策略的使用**
+```
+hdfs storagepolicies -help
+```
 
 
 
