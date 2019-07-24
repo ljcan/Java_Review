@@ -65,6 +65,12 @@ HDFS异构存储特性的出现使得我们不需要搭建2套独立的集群来
 hdfs storagepolicies -help
 ```
 
+**HDFS短路读**
+
+https://www.cnblogs.com/zhangningbo/p/4146296.html
+
+
+
 
 
 
