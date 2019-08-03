@@ -13,7 +13,9 @@ YARN的架构图很人性化，client表示客户端，当client提交任务的�
 
 ![MR on YARN](https://github.com/ljcan/jqBlogs/blob/master/Hadoop/MR%20on%20YARN.png)
 
+**MapReduce on YARN流程图简述：**
 
+当客户端提交任务到ResourceManager，ApplicationManager会去管理NodeManager生成一个App Master（应用管理者），当App Master建立之后，就会向ApplicationsManager来反馈并且调度，向ResouceScheduler调度资源，当调度完毕以后,App Master就会去管理相应的Node Manager，到容器Container中调度相应的任务，Map Task或者Reduce Task，在每一个任务运行的过程中，App Master还会一直监控着每一个任务，因此每一个任务会向其反馈当前任务的运行信息，最后，任务运行完毕后向ApplicationsManager提交任务，client还可以通过页面的信息来通过App Master监控任务的当前状况。
 
 
 
