@@ -22,7 +22,17 @@ YARN的架构图很人性化，client表示客户端，当client提交任务的�
 当DataNode读取block的时候，它会计算checksum，如果计算后的checksum与block创建时值不一样，说明该block已经损坏，client读取其他DataNode上的block，然后删除该block，并且复制block副本数达到预期设置的文件备份数。DataNode在其文件创建三周后验证其checksum。
 
 **NameNode启动过程**
+
 ![namenode启动过程](https://github.com/ljcan/jqBlogs/blob/master/Hadoop/NameNode%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B.png)
+
+namenode：
+
+namenode的数据存储在内存或者磁盘文件fsimage（格式化文件系统就是为了生成这个，存储着元数据）、edits中，在执行`start namenode`命令后，会read fsimage文件，在`start datanode`的时候，向namenode进行注册，并且进行block report，然后创建临时文件，并且写edits文件，在第二次启动namenode的时候，会读fsimage或者edits文件，并且生成新的fsimage文件。
+
+**secondaryNameNode辅助功能**
+
+namenode中的编辑日志文件如果太大的话需要借助secondaryNameNode，定期的合并，将fsimage文件和edits文件合并成一个新的fsimage文件，因为hdfs读取fsimage文件要比edits文件快很多。
+
 
 
 
