@@ -21,5 +21,8 @@ YARN的架构图很人性化，client表示客户端，当client提交任务的�
 
 当DataNode读取block的时候，它会计算checksum，如果计算后的checksum与block创建时值不一样，说明该block已经损坏，client读取其他DataNode上的block，然后删除该block，并且复制block副本数达到预期设置的文件备份数。DataNode在其文件创建三周后验证其checksum。
 
+**NameNode启动过程**
+![namenode启动过程](https://github.com/ljcan/jqBlogs/blob/master/Hadoop/NameNode%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B.png)
+
 
 
