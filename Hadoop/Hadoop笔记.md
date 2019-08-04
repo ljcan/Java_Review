@@ -33,6 +33,13 @@ namenode的数据存储在内存或者磁盘文件fsimage（格式化文件系�
 
 namenode中的编辑日志文件如果太大的话需要借助secondaryNameNode，定期的合并，将fsimage文件和edits文件合并成一个新的fsimage文件，因为hdfs读取fsimage文件要比edits文件快很多。
 
+### Flume
+
+event是flume数据传输的基本单元，flume以事件的形式将数据从源头传送到最终的目的，event由可选的header和载有数据的一个byte array构成，载有数据对flume是不透明的，header是容纳了key-value字符串对的无序集合，key在集合内是唯一的，header也可以在上下文路由中使用扩展。
+
+Flume-ng只有一个角色的节点，agent的角色，agent有source，channel，sink组成。
+
+
 
 
 
