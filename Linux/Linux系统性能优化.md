@@ -55,6 +55,29 @@ execsnoop 就是一个专为短时进程设计的工具。它通过 ftrace 实�
 - 接下来看两个 CPU 的使用率情况，用户 CPU 和系统 CPU 都不高，但 iowait 分别是 60.5% 和 94.6%，好像有点儿不正常。
 - 最后再看每个进程的情况， CPU 使用率最高的进程只有 0.3%，看起来并不高;但有两个进 程处于 D 状态，它们可能在等待 I/O，但光凭这里并不能确定是它们导致了iowait 升高。
 
+**dstat工具**
+
+可以同时查看 CPU 和 I/O 这两种 资源的使用情况，便于对比分析。
+
+strace 正是最常用的跟踪进程系统调用的工具。所以，我们从 pidstat 的输出中拿到进程的 PID 号，比如 6082，然后在终端中运行 strace 命令，并用 -p 参数指定 PID 号:
+```
+strace -p 6082
+strace: attach: ptrace(PTRACE_SEIZE, 6082): Operation not permitted
+```
+
+1. 虽然这个案例是磁盘 I/O 导致了 iowait 升高，不过， iowait 高不一定代表I/O 有性能瓶颈。当 系统中只有 I/O 类型的进程在运行时，iowait 也会很高，但实际上，磁盘的读写远没有达 到性能瓶颈的程度。
+2. 因此，碰到 iowait 升高时，需要先用 dstat、pidstat 等工具，确认是不是磁盘 I/O 的问题，然后 再找是哪些进程导致了 I/O。
+3. 等待 I/O 的进程一般是不可中断状态，所以用 ps 命令找到的 D 状态(即不可中断状态)的进 程，多为可疑进程。但这个案例中，在 I/O 操作后，进程又变成了僵尸进程，所以不能用 strace 直接分析这个进程的系统调用。
+4. 这种情况下，我们用了 perf 工具，来分析系统的 CPU 时钟事件，最终发现是直接 I/O 导致的问题。这时，再检查源码中对应位置的问题，就很轻松了。 而僵尸进程的问题相对容易排查，使用 pstree 找出父进程后，去查看父进程的代码，检查 wait()
+/ waitpid() 的调用，或是 SIGCHLD 信号处理函数的注册就行了。
+
+```
+# 先停止产生僵尸进程的 app
+$ docker rm -f app
+# 然后启动新的 app
+$ docker run --privileged --name=app -itd feisky/app:iowait-fix2
+```
+
 
  
  
