@@ -6,3 +6,6 @@
 源码分析：https://github.com/opensourceteams/flink-maven-scala
 
 学习案例：https://github.com/canthny/big-data
+
+Etcd分布式锁：http://blogspring.cn/view/120
+
