@@ -1,0 +1,14 @@
+SpringBoot的启动过程：
+
+@SpringBootApplication=@Configuration+@EnableAutoConfiguration+@ComponentScan
+
+@Configuration的注解类标识类可以使用Spring ioc容器作为bean定义的来源。
+@Bean注解告诉Spring，一个带有@Bean的注解方法将返回一个对象，该对象应该被注册为在spring应用程序上下文中的bean。
+@ComponentScan这个注解在是自动扫描并加载符合条件的组件或者bean定义，最终将这些bean定义加载到ioc容器中。
+
+SpringBoot的执行流程：
+1.创建SpringApplication对象实例，根据classpath里面是否存在某个特征类ConfigurableWebApplicationContext来决定是否应该创建一个为web应用使用的ApplicaitonContext类型。
+1.1.使用springFactoriesLoader在应用的classpath中查找并加载所有可用的ApplicationContextInitializer。
+1.2.使用SpringFactoriesLoader在应用的classpath中查找并加载所有可用的ApplicatonListener。
+2.SpringApplication实例初始化完成设置后，就开始执行run方法的逻辑了，方法执行开始，首先遍历执行所有通过SpringFactoriesloader可以查找到并加载的
+SpringApplicationRunListener。
