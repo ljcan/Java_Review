@@ -1,0 +1,8 @@
+1.用户发送请求至前端控制器DispatcherServlet。
+2.DispatcherServlet收到请求调用HandlerMapping处理器映射器。
+3.处理器映射器根据配置或注解找到最终要执行的Handler并返回给DispatcherServlet。
+4.DispatcherServlet调用HandlerAdapter处理器适配器。
+5.HandlerAdapter将controller执行结果ModelAndView返回给DispatcherServlet。
+6.DispatcherServlet将ModelAndView传给ViewReslover视图解析器。
+7.DispatcherServlet根据view进行渲染视图。
+8。DispatcherServlet响应用户。
