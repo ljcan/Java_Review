@@ -1,0 +1,1 @@
+- spark.yarn.dist.archives：可以将 hdfs 上的一个压缩文件，自动拷贝到每一个 Spark Task 进程 container 环境路径下
