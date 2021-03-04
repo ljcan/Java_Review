@@ -24,9 +24,9 @@ systemctl restart rabbitmq-server
 #1.修改配置文件/var/lib/rabbitmq/mnesia/rabbit@VM_216_159_centos-plugins-expand/rabbitmq_management-3.8.9/ebin
 
 #2.添加新用户并且授予权限
-rabbitmqctl add_user anroyliu anroyliu     #新建用户
-rabbitmqctl set_user_tags anroyliu administrator    #设定用户administrator角色
-rabbitmqctl set_permissions -p / anroyliu ".*" ".*" ".*"    #赋予用户权限
+rabbitmqctl add_user user user     #新建用户
+rabbitmqctl set_user_tags user administrator    #设定用户administrator角色
+rabbitmqctl set_permissions -p / user ".*" ".*" ".*"    #赋予用户权限
 
 
 我们在b机上使用以下命令查看网络包转发情况，发现有掉包
@@ -124,7 +124,7 @@ rabbitmq_plugins enable rabbitmq_shovel
 **http restful api**
 
 ```
-$ curl -i -u anroyliu:anroyliu http://xxxx:15672/api/queues/rabbit_VM_216_159_centos_2020/ping
+$ curl -i -u user:user http://xxxx:15672/api/queues/rabbit_VM_216_159_centos_2020/ping
 HTTP/1.1 404 Not Found
 content-length: 49
 content-security-policy: script-src 'self' 'unsafe-eval' 'unsafe-inline'; object-src 'self'
